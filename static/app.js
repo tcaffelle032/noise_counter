@@ -8,6 +8,7 @@ const elements = {
   panel: document.getElementById("panel"),
   controls: document.getElementById("controls"),
   toggleControls: document.getElementById("toggleControls"),
+  toggleControls_reset: document.getElementById("toggleControls_reset"),
   manualToggle: document.getElementById("manualToggle"),
   manualLevel: document.getElementById("manualLevel"),
   levelGreen: document.getElementById("levelGreen"),
@@ -245,6 +246,11 @@ function toggleControls() {
   const isHidden = elements.controls.classList.toggle("hidden");
   elements.toggleControls.textContent = isHidden ? "Show Controls" : "Hide Controls";
 }
+function resetCounters() {
+  counts = { yellow: 0, red: 0, max: 0 };
+  updateCounters();
+  postState("RESET");
+}
 
 async function init() {
   await loadLevels();
@@ -252,6 +258,7 @@ async function init() {
   attachLevelInputListeners();
 
   elements.toggleControls.addEventListener("click", toggleControls);
+  elements.toggleControls_reset.addEventListener("click", resetCounters);
 
   try {
     await startAudio();

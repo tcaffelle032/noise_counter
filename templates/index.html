@@ -1,21 +1,29 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Noise Level Monitor</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
+
 <body>
   <div id="app" class="app">
     <div class="panel" id="panel">
       <div class="status" id="status">Initializing</div>
-      <img id="statusImage" class="status-image" src="{{ url_for('static', filename='mi_meme_1.png') }}" alt="Status image" />
+      <img id="statusImage" class="status-image" src="{{ url_for('static', filename='mi_meme_1.png') }}"
+        alt="Status image" />
       <div class="db" id="db">--- dB</div>
       <div class="counters" id="counters">Yellow: 0 | Red: 0 | Max: 0</div>
+      <div id="controlPanel" class="control-panel">
+        <button id="toggleControls" class="toggle-controls">Hide Controls</button>
+        <button id="toggleControls_reset" class="toggle-controls">Reset</button>
+      </div>
     </div>
 
-    <button id="toggleControls" class="toggle-controls">Hide Controls</button>
+
+
 
     <div id="controls" class="controls">
       <div class="row">
@@ -51,4 +59,5 @@
 
   <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
+
 </html>
