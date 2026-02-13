@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from flask import Flask, jsonify, render_template, request
 
+
+
 app = Flask(__name__)
 
 DEFAULT_LEVELS = {
-    "GREEN": -25.0,
-    "YELLOW": -10.0,
-    "RED": -8.0,
+    "GREEN": -10.0,
+    "YELLOW": -5.0,
+    "RED": -3.0,
     "MAX": 0.0,
 }
 
@@ -74,6 +76,7 @@ def update_state():
         state["last_zone"] = label
         if label == "YELLOW":
             state["yellow"] += 1
+            audio("static/tindeck_1.mp3").play(block=True)
         elif label == "RED":
             state["red"] += 1
         elif label == "MAX":
@@ -89,4 +92,4 @@ def reset_state():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8008, debug=True)
+    app.run(host="0.0.0.0", port=8008, debug=False)

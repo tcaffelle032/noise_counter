@@ -32,6 +32,13 @@ const colorMap = {
   MAX: "#7a1d1d",
 };
 
+const audioMap = {
+  GREEN: "",
+  YELLOW: "/static/mgs_alert.mp3",
+  RED: "/static/red_alert.mp3",
+  MAX: "/static/max_scream.mp3",
+};
+
 let levels = {
   GREEN: -25.0,
   YELLOW: -10.0,
@@ -45,6 +52,8 @@ let buffer;
 let lastZone = null;
 let counts = { yellow: 0, red: 0, max: 0 };
 let levelsUpdateTimer;
+let zoneAudioPlayer;
+let isZoneAudioPlaying = false;
 
 function rmsToDb(rms) {
   const safe = Math.max(rms, MIN_RMS);
@@ -91,6 +100,33 @@ async function postState(label) {
   }
 }
 
+function playZoneAudio(label) {
+  const src = audioMap[label];
+  if (!src) {
+    return Promise.resolve();
+  }
+
+  if (!zoneAudioPlayer) {
+    zoneAudioPlayer = new Audio();
+  }
+
+  zoneAudioPlayer.pause();
+  zoneAudioPlayer.currentTime = 0;
+  zoneAudioPlayer.src = src;
+  isZoneAudioPlaying = true;
+
+  return new Promise((resolve) => {
+    const finish = () => {
+      isZoneAudioPlaying = false;
+      resolve();
+    };
+
+    zoneAudioPlayer.addEventListener("ended", finish, { once: true });
+    zoneAudioPlayer.addEventListener("error", finish, { once: true });
+    zoneAudioPlayer.play().catch(finish);
+  });
+}
+
 function handleZoneChange(label) {
   if (label === lastZone) {
     return;
@@ -105,6 +141,7 @@ function handleZoneChange(label) {
   }
   updateCounters();
   postState(label);
+  void playZoneAudio(label);
 }
 
 async function loadLevels() {
@@ -215,6 +252,10 @@ async function startAudio() {
 }
 
 function updateLoop() {
+  if (isZoneAudioPlaying) {
+    return;
+  }
+
   const manual = elements.manualToggle.checked;
   if (manual) {
     const label = elements.manualLevel.value;
